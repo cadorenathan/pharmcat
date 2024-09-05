@@ -1,0 +1,18 @@
+#create a text file "files.txt" with all samples IDs you want to run
+#create a index .tbi for all files
+file="files.txt"
+while IFS= read -r line; do
+bcftools index -t ${line}.hard-filtered.gvcf.gz
+done < "$file"
+
+#filter variants with low genotype quality
+file="files.txt"
+while IFS= read -r line; do
+bcftools filter -i 'FORMAT/GQ>=10' ${line}.hard-filtered.gvcf.gz -o ${line}.filtered_gvcf.vcf
+done < "$file"
+
+#run PharmCAT
+file="files.txt"
+while IFS= read -r line; do
+java -jar pharmcat-2.15.3-all.jar -vcf ${line}.filtered_gvcf.vcf
+done < "$file"
