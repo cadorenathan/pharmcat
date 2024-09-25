@@ -1,15 +1,11 @@
-#create a text file "files.txt" with all samples IDs you want to run
-#create a index .tbi for all files
-file="files.txt"
-while IFS= read -r line; do
-bcftools index -t ${line}.hard-filtered.gvcf.gz
-done < "$file"
+#run the preprocessor with the multi-sample VCF
+#it will split all samples and filter only sites from its database
+#Prerequisites bcftools >= v1.18 htslib >= v1.18 python >= 3.10.14 
+python3 pharmcat_vcf_preprocessor.py -vcf <multi_sample_vcf> -ss
 
-#filter variants with low genotype quality
-file="files.txt"
-while IFS= read -r line; do
-bcftools filter -i 'FORMAT/GQ>=10' ${line}.hard-filtered.gvcf.gz -o ${line}.filtered_gvcf.vcf
-done < "$file"
+#make a list with all samples 
+
+
 
 #run PharmCAT
 file="files.txt"
